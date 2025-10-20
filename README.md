@@ -1,5 +1,6 @@
 # Sakila Database - Phân tích cấu trúc và quan hệ
 
+
 ## Tổng quan
 Sakila là một cơ sở dữ liệu mẫu được thiết kế để mô phỏng hệ thống quản lý cửa hàng cho thuê DVD. Database này chứa dữ liệu về phim, diễn viên, khách hàng, nhân viên, cửa hàng và các giao dịch cho thuê.
 
