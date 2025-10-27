@@ -25,7 +25,6 @@ public class FilmController {
     @Autowired
     private FilmService filmService;
 
-    // 1. CREATE - Tạo phim mới
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmRequestDTO filmRequest) {
@@ -34,7 +33,6 @@ public class FilmController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
     }
 
-    // 2. READ - Lấy danh sách tất cả phim
     @GetMapping
     public ResponseEntity<List<FilmDTO>> getAllFilms(
             @RequestParam(defaultValue = "0") int page,
@@ -50,14 +48,12 @@ public class FilmController {
         return ResponseEntity.ok(films.getContent());
     }
 
-    // 3. READ - Lấy phim theo ID
     @GetMapping("/{id}")
     public ResponseEntity<FilmDTO> getFilmById(@PathVariable Short id) {
         FilmDTO film = filmService.getFilmById(id);
         return ResponseEntity.ok(film);
     }
 
-    // 4. UPDATE - Cập nhật phim
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<FilmDTO> updateFilm(@PathVariable Short id,
@@ -66,7 +62,6 @@ public class FilmController {
         return ResponseEntity.ok(updatedFilm);
     }
 
-    // 5. DELETE - Xóa phim
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteFilm(@PathVariable Short id) {
@@ -74,7 +69,6 @@ public class FilmController {
         return ResponseEntity.noContent().build();
     }
 
-    // Search films
     @GetMapping("/search")
     public ResponseEntity<List<FilmDTO>> searchFilms(@RequestParam String title) {
         List<FilmDTO> films = filmService.searchFilms(title);

@@ -9,13 +9,10 @@ import java.util.List;
 
 public interface LanguageService {
     
-    // CREATE
     LanguageDTO createLanguage(LanguageRequestDTO languageRequest);
     
-    // READ
     Page<LanguageDTO> getAllLanguages(Pageable pageable);
     LanguageDTO getLanguageById(Byte id);
     
-    // DELETE
     void deleteLanguage(Byte id);
 }

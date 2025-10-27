@@ -15,35 +15,20 @@ import java.util.List;
 @Repository
 public interface FilmRepository extends JpaRepository<Film, Short> {
 
-    // Find by title (caseinsensitive)
     List<Film> findByTitleContainingIgnoreCase(String title);
 
-    // Find by release year
-    List<Film> findByReleaseYear(Integer year);
-
-    // Find by rating
-    List<Film> findByRating(String rating);
-
-    // Find by language
     List<Film> findByLanguage(Language language);
 
-    // Find by rental rate range
     @Query("SELECT f FROM Film f WHERE f.rentalRate BETWEEN :minRate AND :maxRate")
     List<Film> findByRentalRateRange(@Param("minRate") BigDecimal minRate,
                                      @Param("maxRate") BigDecimal maxRate);
 
-    // Find by length range
     @Query("SELECT f FROM Film f WHERE f.length BETWEEN :minLength AND :maxLength")
     List<Film> findByLengthRange(@Param("minLength") Short minLength,
                                  @Param("maxLength") Short maxLength);
 
-    // Find films with pagination
     Page<Film> findAll(Pageable pageable);
 
-    // Find by title with pagination
-    Page<Film> findByTitleContainingIgnoreCase(String title, Pageable pageable);
-
-    // Custom query for search
     @Query("SELECT f FROM Film f WHERE " +
             "(:title IS NULL OR LOWER(f.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
             "(:year IS NULL OR f.releaseYear = :year) AND " +

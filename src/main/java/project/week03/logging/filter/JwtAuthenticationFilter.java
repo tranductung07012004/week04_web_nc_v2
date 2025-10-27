@@ -33,16 +33,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
         
-        // 1. Check Authorization header first
-        final String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            try {
-                username = jwtUtil.extractUsername(jwt);
-            } catch (Exception e) {
-                logger.error("JWT token is invalid or expired");
-            }
-        }
+//        // 1. Check Authorization header first
+//        final String authorizationHeader = request.getHeader("Authorization");
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//            jwt = authorizationHeader.substring(7);
+//            try {
+//                username = jwtUtil.extractUsername(jwt);
+//            } catch (Exception e) {
+//                logger.error("JWT token is invalid or expired");
+//            }
+//        }
         
         // 2. If no token from header, check cookie
         if (jwt == null) {

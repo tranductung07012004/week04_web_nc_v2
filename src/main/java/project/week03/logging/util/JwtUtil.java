@@ -69,16 +69,4 @@ public class JwtUtil {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-    
-    public Boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            return false;
-        }
-    }
 }

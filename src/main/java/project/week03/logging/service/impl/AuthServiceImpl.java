@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
         );
         
         User user = (User) authentication.getPrincipal();
-        String token = jwtUtil.generateToken(user);
+        //String token = jwtUtil.generateToken(user);
         
         return new AuthResponseDTO(
             "Login successful",
@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
         
         // Generate token for the new user
-        String token = jwtUtil.generateToken(savedUser);
+        //String token = jwtUtil.generateToken(savedUser);
         
         return new AuthResponseDTO(
             "User registered successfully",
