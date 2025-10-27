@@ -12,6 +12,5 @@ public interface AuthService {
     
     AuthResponseDTO logout();
     
-    // Method để lấy token cho cookie
     String generateTokenForUser(String email);
 }

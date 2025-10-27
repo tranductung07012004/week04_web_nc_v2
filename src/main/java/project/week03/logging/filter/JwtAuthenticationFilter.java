@@ -8,14 +8,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import project.week03.logging.entity.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import project.week03.logging.service.impl.UserDetailsServiceImpl;
 import project.week03.logging.util.JwtUtil;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -31,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         
         String email = null;
+        List<String> roles = null;
         String jwt = null;
         System.out.println("Breakpoint 1" + true);
         
@@ -53,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     jwt = cookie.getValue();
                     try {
                         email = jwtUtil.extractEmail(jwt);
+                        roles = jwtUtil.extractRoles(jwt);
                     } catch (Exception e) {
                         logger.error("JWT cookie is invalid or expired");
                     }
@@ -65,20 +70,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             System.out.println("Break point 3");
             try {
-                User userDetails = this.userDetailsService.loadUserByEmail(email);
+                //User userDetails = this.userDetailsService.loadUserByEmail(email);
 
-                System.out.println("Breakpoint 4 " + email + " " + userDetails + " " + jwt);
+                System.out.println("Breakpoint 4 " + email + " " + roles + " " + jwt);
 
-                if (jwtUtil.validateToken(jwt, userDetails)) {
-                    System.out.println("Breakpoint 5");
-                    // Debug: Log authorities
-                    logger.info("User: {} has authorities: {}" + email + userDetails.getAuthorities());
-                    
-                    UsernamePasswordAuthenticationToken authToken = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+                // Debug: Log authorities
+                logger.info("User: {} has authorities: {}" + email + " " + roles);
+
+                List<SimpleGrantedAuthority> authorities = roles
+                        .stream() // Already return empty array in above function, ignore this warning
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+                UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(email, null, authorities);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+
             } catch (Exception e) {
                 logger.error("Cannot set user authentication: {}" + e.getMessage() + e);
             }

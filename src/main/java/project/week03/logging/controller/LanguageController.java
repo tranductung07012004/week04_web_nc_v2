@@ -25,7 +25,7 @@ public class LanguageController {
     private LanguageService languageService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public ResponseEntity<LanguageDTO> createLanguage(@Valid @RequestBody LanguageRequestDTO languageRequest) {
         LanguageDTO createdLanguage = languageService.createLanguage(languageRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLanguage);
@@ -53,7 +53,7 @@ public class LanguageController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteLanguage(@PathVariable Byte id) {
         languageService.deleteLanguage(id);
         return ResponseEntity.noContent().build();

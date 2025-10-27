@@ -25,7 +25,7 @@ public class FilmController {
     private FilmService filmService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmRequestDTO filmRequest) {
         System.out.println("DEBUG: FilmController.createFilm() called - Authorization passed!");
         FilmDTO createdFilm = filmService.createFilm(filmRequest);
@@ -54,7 +54,7 @@ public class FilmController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('MANAGER')")
     public ResponseEntity<FilmDTO> updateFilm(@PathVariable Short id,
                                               @Valid @RequestBody FilmRequestDTO filmRequest) {
         FilmDTO updatedFilm = filmService.updateFilm(id, filmRequest);
@@ -62,7 +62,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteFilm(@PathVariable Short id) {
         filmService.deleteFilm(id);
         return ResponseEntity.noContent().build();

@@ -40,16 +40,13 @@ public class AuthServiceImpl implements AuthService {
     
     @Override
     public AuthResponseDTO login(LoginRequestDTO loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail(),
-                loginRequest.getPassword()
-            )
-        );
-        
-        User user = (User) authentication.getPrincipal();
-        //String token = jwtUtil.generateToken(user);
-        
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + loginRequest.getEmail()));
+
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Password not match!");
+        }
+
         return new AuthResponseDTO(
             "Login successful",
             user.getUsername(),
@@ -103,7 +100,6 @@ public class AuthServiceImpl implements AuthService {
     public String generateTokenForUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println("This is user in generateTokenForUser" + true + user);
         return jwtUtil.generateToken(user);
     }
 }
