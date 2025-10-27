@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.week03.logging.dto.FilmDTO;
 import project.week03.logging.dto.FilmRequestDTO;
@@ -26,7 +27,9 @@ public class FilmController {
 
     // 1. CREATE - Tạo phim mới
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<FilmDTO> createFilm(@Valid @RequestBody FilmRequestDTO filmRequest) {
+        System.out.println("DEBUG: FilmController.createFilm() called - Authorization passed!");
         FilmDTO createdFilm = filmService.createFilm(filmRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFilm);
     }
@@ -56,6 +59,7 @@ public class FilmController {
 
     // 4. UPDATE - Cập nhật phim
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_MANAGER')")
     public ResponseEntity<FilmDTO> updateFilm(@PathVariable Short id,
                                               @Valid @RequestBody FilmRequestDTO filmRequest) {
         FilmDTO updatedFilm = filmService.updateFilm(id, filmRequest);
@@ -64,45 +68,16 @@ public class FilmController {
 
     // 5. DELETE - Xóa phim
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteFilm(@PathVariable Short id) {
         filmService.deleteFilm(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Bonus endpoints
+    // Search films
     @GetMapping("/search")
     public ResponseEntity<List<FilmDTO>> searchFilms(@RequestParam String title) {
         List<FilmDTO> films = filmService.searchFilms(title);
-        return ResponseEntity.ok(films);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<FilmDTO>> filterFilms(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) String rating,
-            @RequestParam(required = false) Byte languageId) {
-        List<FilmDTO> films = filmService.findFilmsWithFilters(title, year, rating, languageId);
-        return ResponseEntity.ok(films);
-    }
-
-    @GetMapping("/year/{year}")
-    public ResponseEntity<List<FilmDTO>> getFilmsByYear(@PathVariable Integer year) {
-        List<FilmDTO> films = filmService.findByReleaseYear(year);
-        return ResponseEntity.ok(films);
-    }
-
-    @GetMapping("/rating/{rating}")
-    public ResponseEntity<List<FilmDTO>> getFilmsByRating(@PathVariable String rating) {
-        List<FilmDTO> films = filmService.findByRating(rating);
-        return ResponseEntity.ok(films);
-    }
-
-    @GetMapping("/rental-rate")
-    public ResponseEntity<List<FilmDTO>> getFilmsByRentalRateRange(
-            @RequestParam BigDecimal minRate,
-            @RequestParam BigDecimal maxRate) {
-        List<FilmDTO> films = filmService.findByRentalRateRange(minRate, maxRate);
         return ResponseEntity.ok(films);
     }
 }

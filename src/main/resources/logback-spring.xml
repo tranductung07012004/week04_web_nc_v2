@@ -31,7 +31,7 @@
 
     <!-- File appender với rotation -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/film-api.log</file>
+        <file>logs/film-api-latest.log</file>
         
         <!-- Rolling policy: theo thời gian và kích thước -->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -40,7 +40,7 @@
             
             <!-- Giới hạn kích thước file: 1MB -->
             <maxFileSize>1MB</maxFileSize>
-            <maxHistory>10</maxHistory>
+            <maxHistory>2</maxHistory>
             
             <!-- Tổng kích thước tối đa: 1GB -->
             <totalSizeCap>1GB</totalSizeCap>

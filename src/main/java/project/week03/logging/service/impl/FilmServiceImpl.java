@@ -36,15 +36,6 @@ public class FilmServiceImpl implements FilmService {
         return convertToDTO(savedFilm);
     }
 
-    // READ
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> getAllFilms() {
-        return filmRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
     @Override
     @Transactional(readOnly = true)
     public Page<FilmDTO> getAllFilms(Pageable pageable) {
@@ -68,21 +59,6 @@ public class FilmServiceImpl implements FilmService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<FilmDTO> searchFilms(String title, Pageable pageable) {
-        return filmRepository.findByTitleContainingIgnoreCase(title, pageable)
-                .map(this::convertToDTO);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> findFilmsWithFilters(String title, Integer year, String rating, Byte languageId) {
-        return filmRepository.findFilmsWithFilters(title, year, rating, languageId).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
     // UPDATE
     @Override
     public FilmDTO updateFilm(Short id, FilmRequestDTO filmRequest) {
@@ -101,39 +77,6 @@ public class FilmServiceImpl implements FilmService {
             throw new ResourceNotFoundException("Film not found with id: " + id);
         }
         filmRepository.deleteById(id);
-    }
-
-    // Additional methods
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> findByReleaseYear(Integer year) {
-        return filmRepository.findByReleaseYear(year).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> findByRating(String rating) {
-        return filmRepository.findByRating(rating).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> findByRentalRateRange(BigDecimal minRate, BigDecimal maxRate) {
-        return filmRepository.findByRentalRateRange(minRate, maxRate).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<FilmDTO> findByLengthRange(Short minLength, Short maxLength) {
-        return filmRepository.findByLengthRange(minLength, maxLength).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
     }
 
     // Helper methods
