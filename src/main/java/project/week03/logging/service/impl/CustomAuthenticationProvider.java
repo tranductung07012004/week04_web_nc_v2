@@ -25,7 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
         
-        UserDetails userDetails;
+        User userDetails;
         
         // Load user by email only
         try {

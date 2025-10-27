@@ -27,7 +27,6 @@ public class AuthController {
         try {
             AuthResponseDTO authResponse = authService.login(loginRequest);
             
-            // Generate token for cookie
             String token = authService.generateTokenForUser(loginRequest.getEmail());
             
             // Set JWT token in HTTP-only cookie

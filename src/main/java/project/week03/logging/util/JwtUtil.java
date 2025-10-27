@@ -3,7 +3,6 @@ package project.week03.logging.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -11,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import project.week03.logging.entity.User;
 
 @Component
 public class JwtUtil {
@@ -25,7 +25,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
     
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
     
@@ -50,9 +50,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
     
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getEmail());
     }
     
     private String createToken(Map<String, Object> claims, String subject) {
@@ -65,8 +65,8 @@ public class JwtUtil {
                 .compact();
     }
     
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token, User userDetails) {
+        final String email = extractEmail(token);
+        return (email.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
 }

@@ -19,23 +19,5 @@ public interface FilmRepository extends JpaRepository<Film, Short> {
 
     List<Film> findByLanguage(Language language);
 
-    @Query("SELECT f FROM Film f WHERE f.rentalRate BETWEEN :minRate AND :maxRate")
-    List<Film> findByRentalRateRange(@Param("minRate") BigDecimal minRate,
-                                     @Param("maxRate") BigDecimal maxRate);
-
-    @Query("SELECT f FROM Film f WHERE f.length BETWEEN :minLength AND :maxLength")
-    List<Film> findByLengthRange(@Param("minLength") Short minLength,
-                                 @Param("maxLength") Short maxLength);
-
     Page<Film> findAll(Pageable pageable);
-
-    @Query("SELECT f FROM Film f WHERE " +
-            "(:title IS NULL OR LOWER(f.title) LIKE LOWER(CONCAT('%', :title, '%'))) AND " +
-            "(:year IS NULL OR f.releaseYear = :year) AND " +
-            "(:rating IS NULL OR f.rating = :rating) AND " +
-            "(:languageId IS NULL OR f.language.languageId = :languageId)")
-    List<Film> findFilmsWithFilters(@Param("title") String title,
-                                    @Param("year") Integer year,
-                                    @Param("rating") String rating,
-                                    @Param("languageId") Byte languageId);
 }

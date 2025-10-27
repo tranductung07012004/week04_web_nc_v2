@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Table(name = "user")
-public class User implements UserDetails {
+public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,48 +58,14 @@ public class User implements UserDetails {
         updatedAt = LocalDateTime.now();
     }
     
-    // UserDetails implementation
-    @Override
-    public String getUsername() {
-        return username; // Return actual username field
-    }
-    
-    @Override
-    public String getPassword() {
-        return password;
-    }
-    
-    @Override
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println("DEBUG: User roles: " + roles);
         Collection<? extends GrantedAuthority> authorities = roles.stream()
                 .map(role -> {
                     String authority = "ROLE_" + role.getRoleName();
-                    System.out.println("DEBUG: Creating authority: " + authority);
                     return new SimpleGrantedAuthority(authority);
                 })
                 .collect(Collectors.toList());
-        System.out.println("DEBUG: Final authorities: " + authorities);
         return authorities;
-    }
-    
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-    
-    @Override
-    public boolean isEnabled() {
-        return enabled;
     }
 }
