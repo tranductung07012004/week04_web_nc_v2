@@ -3,7 +3,6 @@ package project.week03.logging.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 import lombok.Data;
 

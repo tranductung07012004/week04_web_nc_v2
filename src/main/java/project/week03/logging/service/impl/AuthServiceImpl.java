@@ -16,8 +16,9 @@ import project.week03.logging.repository.RoleRepository;
 import project.week03.logging.repository.UserRepository;
 import project.week03.logging.service.AuthService;
 import project.week03.logging.util.JwtUtil;
+import java.util.stream.Collectors;
 
-import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -58,27 +59,27 @@ public class AuthServiceImpl implements AuthService {
     
     @Override
     public AuthResponseDTO register(RegisterRequestDTO registerRequest) {
-        // Check if username already exists
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            throw new RuntimeException("Username is already taken!");
-        }
-        
+
         // Check if email already exists
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new RuntimeException("Email is already in use!");
         }
-        
+        List<String> requestedRoles = registerRequest.getRoles();
+        List <Role> foundRolesInDb = roleRepository.findByRoleNameIn(requestedRoles);
+
+        if (foundRolesInDb.size() != requestedRoles.size()) {
+            List<String> missingRoles = requestedRoles.stream()
+                    .filter(r -> foundRolesInDb.stream().noneMatch(f -> f.getRoleName().equals(r)))
+                    .collect(Collectors.toList());
+            throw new IllegalArgumentException("Invalid roles: " + missingRoles);
+        }
         // Create new user
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setRoles(foundRolesInDb);
         user.setEnabled(true);
-        
-        // Assign default role (USER)
-        Role userRole = roleRepository.findByRoleName("USER")
-                .orElseThrow(() -> new RuntimeException("User role not found"));
-        user.setRoles(Collections.singletonList(userRole));
         
         User savedUser = userRepository.save(user);
         
